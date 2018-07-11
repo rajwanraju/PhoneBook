@@ -20,13 +20,13 @@
 	    	{{ item.name }}
 	  	</span>
 	    <span class="panel-icon column is-1">
-	      <i class="has-text-danger fa fa-trash" aria-hidden="true">Delete</i>
+	      <i class="has-text-danger fa fa-trash" aria-hidden="true"></i>
 	    </span>
 	    <span class="panel-icon column is-1">
-	      <i class="has-text-info fa fa-edit" aria-hidden="true">Edit</i>
+	      <i class="has-text-info fa fa-edit" aria-hidden="true" @click="openEdit(key)"></i>
 	    </span>
       <span class="panel-icon column is-1">
-	      <i class="has-text-primary fa fa-eye" aria-hidden="true">Show</i>
+	      <i class="has-text-primary fa fa-eye" aria-hidden="true"  @click="openShow(key)"></i>
 	    </span>
 	  </a>
 
@@ -35,19 +35,27 @@
 </nav>
 
 <Add :openmodal='addActive' @closeRequest='close'></Add>
+
+<Show :openmodal='showActive' @closeRequest='close'></Show>
+<Edit :openmodal='editActive' @closeRequest='close'></Edit>
 </div>
 </template>
+
 
 <script>
 
 let Add = require('./Add.vue');
+let Show = require('./show.vue');
+let Edit = require('./Edit.vue');
 export default{
 
-components: {Add},
+components: {Add,Show,Edit},
 data(){
 return{
 
   addActive: '',
+  showActive: '',
+  editActive: '',
   lists:{},
   errors:{}
 }
@@ -61,7 +69,6 @@ axios.post('/getData').then((response)=>this.lists=response.data)
 
 
 
-
 },
 
 
@@ -71,9 +78,26 @@ methods:{
   openAdd(){
     this.addActive = 'is-active';
   },
+
+ openShow(key){
+
+this.$children[1].list = this.lists[key]
+
+    this.showActive = 'is-active';
+  },
+
+
+
+   openEdit(key){
+
+this.$children[1].list = this.lists[key]
+    this.editActive = 'is-active';
+  },
+
+
   close(){
 
-this.addActive= ''
+this.addActive = this.showActive = ''
 
   }
 }
